@@ -3,14 +3,14 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 SHELL ["/bin/bash", "-lc"]
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ---- Base & requested packages ----
+# ---------- Base & requested packages ----------
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    # Your requested tools
+    # Your requested packages
     m4 libx11-dev tcsh tcl tclsh autoconf automake libtool swig tcllib \
     libreoffice \
     # OpenTimer dependency
     libgoogle-glog-dev \
-    # Yosys build deps (as you listed)
+    # Yosys build deps (as per your list)
     build-essential clang lld bison flex libfl-dev \
     libreadline-dev gawk tcl-dev libffi-dev git \
     graphviz xdot pkg-config python3 \
@@ -19,7 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl vim tree unzip perl \
  && rm -rf /var/lib/apt/lists/*
 
-# ---- Optional: newer GCC/G++ (uncomment if you want GCC-14) ----
+# ---------- Optional: newer GCC/G++ ----------
+# Uncomment if you specifically want GCC-14 instead of Ubuntu 24.04's GCC-13
 # RUN apt-get update && apt-get install -y software-properties-common && \
 #     add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
 #     apt-get update && apt-get install -y gcc-14 g++-14 && \
@@ -29,24 +30,27 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /opt
 
-# ---- OpenTimer (Autotools: ./configure; make; make install) ----
-# Some snapshots try to call aclocal-1.14; provide compatibility symlinks to 1.16.
+# ---------- OpenTimer (Autotools: ./configure; make; make install) ----------
+# Some older snapshots try to call aclocal-1.14; map to automake-1.16 on Ubuntu.
 RUN if command -v aclocal-1.16 >/dev/null; then \
       ln -sf "$(command -v aclocal-1.16)" /usr/local/bin/aclocal-1.14; \
+    fi && \
+    if command -v automake-1.16 >/dev/null; then \
       ln -sf "$(command -v automake-1.16)" /usr/local/bin/automake-1.14; \
     fi
 
+# Build with C++17 to avoid std::chrono SFINAE issues on GCC-13
+ENV OT_CXXFLAGS="-O3 -std=gnu++17"
 RUN git clone https://github.com/skyformat99/OpenTimer-1.0.5.git && \
     cd OpenTimer-1.0.5 && \
-    # Use existing generated configure scripts; don't force autoreconf.
-    ./configure CXXFLAGS="-O3 -std=c++11" && \
+    ./configure CXXFLAGS="${OT_CXXFLAGS}" && \
     make -j"$(nproc)" && \
     make install || ( \
       echo "Install failed; copying built binary if present" && \
       ([ -f ./OpenTimer ] && cp ./OpenTimer /usr/local/bin/ot || true) && \
       ([ -f ./bin/OpenTimer ] && cp ./bin/OpenTimer /usr/local/bin/ot || true) )
 
-# ---- Yosys (make config-gcc; make; make install) ----
+# ---------- Yosys (make config-gcc; make; make install) ----------
 RUN git clone https://github.com/YosysHQ/yosys.git && \
     cd yosys && \
     git submodule update --init --recursive && \
@@ -54,7 +58,7 @@ RUN git clone https://github.com/YosysHQ/yosys.git && \
     make -j"$(nproc)" && \
     make install
 
-# ---- sanity on container start ----
+# ---------- sanity on container start ----------
 CMD echo "== Versions ==" && \
     (command -v ot >/dev/null && (ot -h 2>&1 | head -n1) || echo "OpenTimer installed as /usr/local/bin/ot") && \
     yosys -V && \
