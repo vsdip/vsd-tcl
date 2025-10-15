@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libreoffice \
     # OpenTimer dependency
     libgoogle-glog-dev \
-    # Yosys build deps (as per your list)
+    # Yosys build deps (per your list)
     build-essential clang lld bison flex libfl-dev \
     libreadline-dev gawk tcl-dev libffi-dev git \
     graphviz xdot pkg-config python3 \
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && rm -rf /var/lib/apt/lists/*
 
 # ---------- Optional: newer GCC/G++ ----------
-# Uncomment if you specifically want GCC-14 instead of Ubuntu 24.04's GCC-13
+# (Ubuntu 24.04 has GCC 13 which supports C++20. Uncomment if you want GCC-14.)
 # RUN apt-get update && apt-get install -y software-properties-common && \
 #     add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
 #     apt-get update && apt-get install -y gcc-14 g++-14 && \
@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /opt
 
-# ---------- OpenTimer (Autotools: ./configure; make; make install) ----------
+# ---------- OpenTimer (Autotools) ----------
 # Some older snapshots try to call aclocal-1.14; map to automake-1.16 on Ubuntu.
 RUN if command -v aclocal-1.16 >/dev/null; then \
       ln -sf "$(command -v aclocal-1.16)" /usr/local/bin/aclocal-1.14; \
@@ -39,8 +39,8 @@ RUN if command -v aclocal-1.16 >/dev/null; then \
       ln -sf "$(command -v automake-1.16)" /usr/local/bin/automake-1.14; \
     fi
 
-# Build with C++17 to avoid std::chrono SFINAE issues on GCC-13
-ENV OT_CXXFLAGS="-O3 -std=gnu++17"
+# Build with C++20 (required by oc_ticker.hpp etc.)
+ENV OT_CXXFLAGS="-O3 -std=gnu++20 -pthread"
 RUN git clone https://github.com/skyformat99/OpenTimer-1.0.5.git && \
     cd OpenTimer-1.0.5 && \
     ./configure CXXFLAGS="${OT_CXXFLAGS}" && \
