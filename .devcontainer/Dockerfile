@@ -27,16 +27,21 @@ RUN apt-get update && \
 # Make sure gcc/g++ point to the higher default (13 on 24.04)
 RUN gcc --version && g++ --version
 
-# --------------------------------------------------------------------
-# Build and install OpenTimer 1.0.5
-# --------------------------------------------------------------------
+# Build and install OpenTimer-1.0.5 (Autotools)
 WORKDIR /opt
 RUN git clone https://github.com/skyformat99/OpenTimer-1.0.5.git && \
-    cmake -S OpenTimer-1.0.5 -B OpenTimer-1.0.5/build -DCMAKE_BUILD_TYPE=Release && \
-    cmake --build OpenTimer-1.0.5/build -j"$(nproc)" && \
-    cmake --install OpenTimer-1.0.5/build || \
-    (echo "OpenTimer 'cmake --install' not provided; copying binary instead." && \
-     cp OpenTimer-1.0.5/build/ot /usr/local/bin/ot)
+    cd OpenTimer-1.0.5 && \
+    # If configure exists, use it; else bootstrap Autotools
+    ( [ -x ./configure ] || autoreconf -fi ) && \
+    ./configure CXXFLAGS="-O3 -std=c++11" && \
+    make -j"$(nproc)" && \
+    make install || ( \
+      # Some snapshots place the binary at top-level or ./bin
+      echo "Install step failed; copying built binary if present" && \
+      ( [ -f ./OpenTimer ] && cp ./OpenTimer /usr/local/bin/ot || true ) && \
+      ( [ -f ./bin/OpenTimer ] && cp ./bin/OpenTimer /usr/local/bin/ot || true ) \
+    )
+
 
 # --------------------------------------------------------------------
 # Build and install Yosys (latest from main)
