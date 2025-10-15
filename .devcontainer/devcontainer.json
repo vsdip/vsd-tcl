@@ -1,28 +1,5 @@
 {
-  "name": "VSD-TCL Workshop Environment",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": ".."
-  },
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-vscode.cpptools",
-        "ms-python.python",
-        "ms-vscode.makefile-tools",
-        "tcl-lang.tcl"
-      ],
-      "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash",
-        "editor.tabSize": 2
-      }
-    }
-  },
-  "remoteUser": "vscode",
-  "mounts": [
-    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ],
-  "postCreateCommand": "sudo ldconfig && echo 'Environment ready: OpenTimer, Yosys, GCC, LibreOffice installed.'",
-  "forwardPorts": [],
-  "features": {}
+  "name": "OpenTimer Minimal",
+  "build": { "dockerfile": "Dockerfile", "context": ".." },
+  "remoteUser": "vscode"
 }
