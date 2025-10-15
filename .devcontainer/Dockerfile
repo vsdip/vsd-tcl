@@ -25,17 +25,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /opt
 
-# --- OpenTimer (Autotools flow: ./configure; make; make install) ---
+# --- OpenTimer (no autoreconf; just ./configure) ---
+WORKDIR /opt
 RUN git clone https://github.com/skyformat99/OpenTimer-1.0.5.git && \
     cd OpenTimer-1.0.5 && \
-    # If configure script isn’t present, bootstrap it:
-    ([ -x ./configure ] || autoreconf -fi) && \
     ./configure CXXFLAGS="-O3 -std=c++11" && \
     make -j"$(nproc)" && \
     make install || \
     (echo "Install step failed; copying built binary if present" && \
      ([ -f ./OpenTimer ] && cp ./OpenTimer /usr/local/bin/ot || true) && \
      ([ -f ./bin/OpenTimer ] && cp ./bin/OpenTimer /usr/local/bin/ot || true))
+
 
 # --- Yosys (make config-gcc; make; make install) ---
 RUN git clone https://github.com/YosysHQ/yosys.git && \
