@@ -5,17 +5,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # --- Base packages + your requested tools ---
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    # Your requested apt packages
     m4 libx11-dev tcsh tcl tclsh autoconf automake libtool swig tcllib \
-    libreoffice \
-    # Yosys build dependencies (as per your list)
+    libreoffice libgoogle-glog-dev \
     build-essential clang lld bison flex libfl-dev \
     libreadline-dev gawk tcl-dev libffi-dev git \
     graphviz xdot pkg-config python3 \
     libboost-system-dev libboost-python-dev libboost-filesystem-dev zlib1g-dev \
-    # Nice-to-have tools
     ca-certificates curl vim tree unzip \
  && rm -rf /var/lib/apt/lists/*
+
 
 # --- Optional: upgrade to newer GCC/G++ (uncomment to use GCC 14) ---
 # RUN apt-get update && apt-get install -y software-properties-common && \
