@@ -1,54 +1,39 @@
 # syntax=docker/dockerfile:1
-FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
+FROM ubuntu:20.04
 SHELL ["/bin/bash", "-lc"]
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ---------- Base & requested packages ----------
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    # Your requested packages
-    m4 libx11-dev tcsh tcl tclsh autoconf automake libtool swig tcllib \
-    libreoffice \
-    # OpenTimer dependency
-    libgoogle-glog-dev \
-    # Yosys build deps (per your list)
-    build-essential clang lld bison flex libfl-dev \
-    libreadline-dev gawk tcl-dev libffi-dev git \
-    graphviz xdot pkg-config python3 \
+# ---- Step 1. Update & upgrade ----
+RUN apt-get update && apt-get upgrade -y
+
+# ---- Step 2. Install build dependencies (exact list you used) ----
+RUN apt-get install -y --no-install-recommends \
+    build-essential clang bison flex libreadline-dev gawk tcl-dev libffi-dev \
+    git graphviz xdot pkg-config python3 \
     libboost-system-dev libboost-python-dev libboost-filesystem-dev zlib1g-dev \
-    # helpers
-    ca-certificates curl vim tree unzip perl \
- && rm -rf /var/lib/apt/lists/*
+    autoconf automake libgoogle-glog-dev \
+    ca-certificates curl vim tree unzip && \
+    rm -rf /var/lib/apt/lists/*
 
-# ---------- Optional: newer GCC/G++ ----------
-# (Ubuntu 24.04 has GCC 13 which supports C++20. Uncomment if you want GCC-14.)
-# RUN apt-get update && apt-get install -y software-properties-common && \
-#     add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
-#     apt-get update && apt-get install -y gcc-14 g++-14 && \
-#     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 50 && \
-#     update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 50 && \
-#     rm -rf /var/lib/apt/lists/*
-
+# ---- Step 3. Build and install OpenTimer ----
 WORKDIR /opt
-
-# ---------- OpenTimer (Autotools) ----------
-# Some older snapshots try to call aclocal-1.14; map to automake-1.16 on Ubuntu.
-RUN if command -v aclocal-1.16 >/dev/null; then \
-      ln -sf "$(command -v aclocal-1.16)" /usr/local/bin/aclocal-1.14; \
-    fi && \
-    if command -v automake-1.16 >/dev/null; then \
-      ln -sf "$(command -v automake-1.16)" /usr/local/bin/automake-1.14; \
-    fi
-
-# Build with C++20 (required by oc_ticker.hpp etc.)
-ENV OT_CXXFLAGS="-O3 -std=gnu++20 -pthread"
 RUN git clone https://github.com/skyformat99/OpenTimer-1.0.5.git && \
     cd OpenTimer-1.0.5 && \
-    ./configure CXXFLAGS="${OT_CXXFLAGS}" && \
+    ./configure && \
+    make -j"$(nproc)" || true && \
+    # Regenerate Autotools metadata if needed
+    aclocal && autoconf && automake --add-missing && \
+    ./configure && \
     make -j"$(nproc)" && \
-    make install || ( \
-      echo "Install failed; copying built binary if present" && \
-      ([ -f ./OpenTimer ] && cp ./OpenTimer /usr/local/bin/ot || true) && \
-      ([ -f ./bin/OpenTimer ] && cp ./bin/OpenTimer /usr/local/bin/ot || true) )
+    make install && \
+    ldconfig && \
+    echo "✅ OpenTimer installed at /usr/local/bin/OpenTimer"
+
+# ---- Step 4. Default command: show version ----
+CMD echo "== OpenTimer Installed ==" && \
+    /usr/local/bin/OpenTimer -h 2>/dev/null | head -n 1 && \
+    g++ --version | head -n 1
+
 
 # ---------- Yosys (make config-gcc; make; make install) ----------
 RUN git clone https://github.com/YosysHQ/yosys.git && \
