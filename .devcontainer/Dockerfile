@@ -53,15 +53,21 @@ user=root
 EOS
 
 # --- Build OpenTimer (skip buggy dist programs) as the 'vscode' user ---
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential git autoconf automake libtool m4 perl \
+    libgoogle-glog-dev libgflags-dev \
+ && rm -rf /var/lib/apt/lists/*
+
 USER vscode
 WORKDIR /workspaces
 
-RUN git clone https://github.com/skyformat99/OpenTimer-1.0.5.git && \
+# Build OpenTimer WITHOUT any error fallbacks that rewrite Makefiles
+RUN set -euo pipefail; \
+    git clone https://github.com/skyformat99/OpenTimer-1.0.5.git && \
     cd OpenTimer-1.0.5 && \
-    # regenerate autotools, then configure (this fork needs C++20)
     autoreconf -fi && \
     CXXFLAGS="-O3 -std=gnu++20 -pthread" ./configure && \
-    # strip dist programs so a plain 'make' won't build them
+    # strip buggy dist programs so 'make' doesn't build them
     sed -i -E 's/(^|[[:space:]])bin\/OpenTimer-agent([[:space:]]|$)//g' Makefile || true && \
     sed -i -E 's/(^|[[:space:]])ot_dist_master([[:space:]]|$)//g; s/(^|[[:space:]])ot_dist_agent([[:space:]]|$)//g' Makefile main/Makefile 2>/dev/null || true && \
     sed -i '/OpenTimer-agent/d;/ot_dist_master/d;/ot_dist_agent/d' Makefile main/Makefile 2>/dev/null || true && \
