@@ -34,11 +34,16 @@ ENV LD_LIBRARY_PATH="/usr/lib:${LD_LIBRARY_PATH:-}"
 # Yosys (build from source)
 # -----------------------------
 # (Later) Copy Yosys bundle
-COPY yosys-binaries.tar.gz /tmp/yosys-binaries.tar.gz
-RUN tar -xzf /tmp/yosys-binaries.tar.gz -C /usr/local/bin && \
-    chmod +x /usr/local/bin/yosys* && \
-    rm /tmp/yosys-binaries.tar.gz && \
-    echo "✅ Precompiled Yosys installed"
+COPY yosys /usr/local/bin/yosys
+COPY yosys-abc /usr/local/bin/yosys-abc
+COPY yosys-config /usr/local/bin/yosys-config
+COPY yosys-filterlib /usr/local/bin/yosys-filterlib
+COPY yosys-smtbmc /usr/local/bin/yosys-smtbmc
+COPY yosys-witness /usr/local/bin/yosys-witness
+
+RUN chmod 0755 /usr/local/bin/yosys /usr/local/bin/yosys-* && \
+    echo "Yosys precompiled binaries installed" && \
+    /usr/local/bin/yosys -V
     
 #WORKDIR /opt
 #RUN git clone https://github.com/YosysHQ/yosys.git && \
