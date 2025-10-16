@@ -34,7 +34,7 @@ ENV LD_LIBRARY_PATH="/usr/lib:${LD_LIBRARY_PATH:-}"
 # Yosys (build from source)
 # -----------------------------
 # (Later) Copy Yosys bundle
-COPY .devcontainer/yosys-binaries.tar.gz /tmp/yosys-binaries.tar.gz
+COPY yosys-binaries.tar.gz /tmp/yosys-binaries.tar.gz
 RUN tar -xzf /tmp/yosys-binaries.tar.gz -C /usr/local/bin && \
     chmod +x /usr/local/bin/yosys* && \
     rm /tmp/yosys-binaries.tar.gz && \
