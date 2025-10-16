@@ -46,8 +46,10 @@ RUN git clone https://github.com/YosysHQ/yosys.git && \
 # noVNC desktop (supervisor)
 # -----------------------------
 # With context "..", this file is available at .devcontainer/supervisord.conf
-COPY .devcontainer/supervisord.conf /etc/supervisor/conf.d/vnc.conf
+COPY supervisord.conf /etc/supervisor/conf.d/vnc.conf
 
 EXPOSE 6080
-WORKDIR /workspaces/vsd-tcl
 CMD ["/usr/bin/supervisord", "-n"]
+
+WORKDIR /workspaces/vsd-tcl
+
