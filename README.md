@@ -1,96 +1,66 @@
-## VSD-TCL Dev Environment (OpenTimer + Yosys + GUI)
+---
 
-This Codespace provides a ready-to-use synthesis and timing analysis environment built on Ubuntu 22.04.
-It includes:
+## VSD-TCL Environment (OpenTimer + Yosys)
 
-* OpenTimer for static timing analysis
-* Yosys for RTL synthesis
-* XFCE desktop access through noVNC for GUI use
+This Codespace provides a complete synthesis and timing analysis setup on Ubuntu 22.04 with both terminal and GUI access.
 
 ---
 
-### Option 1 – Using the Terminal
+### Option 1 – Use the Terminal
 
-1. Open the **TERMINAL** tab in your Codespace (as shown in image 1).
+Open the **TERMINAL** tab and run:
 
-2. Run OpenTimer:
+```bash
+OpenTimer
+```
 
-   ```bash
-   OpenTimer
-   ```
+or
 
-   This opens the OpenTimer shell. Type `exit` to quit.
+```bash
+yosys
+```
 
-3. Run Yosys:
+Exit anytime using `exit`.
 
-   ```bash
-   yosys
-   ```
-
-   The Yosys prompt will appear. Type `exit` when done.
-
-This mode is lightweight and recommended for command-line work or quick testing.
+![Terminal view](images/1.jpg)
 
 ---
 
-### Option 2 – Using the GUI (noVNC Desktop)
+### Option 2 – Use the GUI (noVNC Desktop)
 
-1. Go to the **PORTS** tab in your Codespace (as shown in image 2).
-   You will find a forwarded port labeled **noVNC Desktop (6080)**.
-2. Click the forwarded URL to open it in your browser.
-3. You will see a directory listing similar to image 3.
-   Click **`vnc_lite.html`** to launch the XFCE desktop.
-4. Inside the desktop, open a terminal and run:
+1. Open the **PORTS** tab and find the forwarded port named **noVNC Desktop (6080)**.
+2. Click the forwarded URL.
+3. In the browser, select **`vnc_lite.html`** to open the XFCE desktop.
+4. Open a terminal inside the desktop and run:
 
    ```bash
    OpenTimer
    yosys
    ```
 
-This mode is useful when you need a graphical interface or multiple terminal windows.
+![Ports tab showing noVNC](images/2.jpg)
+![VNC page showing vnc\_lite.html](images/3.jpg)
 
 ---
 
 ### Installed Tools
 
-| Tool                 | Command     | Location               | Description            |
-| -------------------- | ----------- | ---------------------- | ---------------------- |
-| OpenTimer            | `OpenTimer` | `/usr/bin/OpenTimer`   | Static timing analyzer |
-| Yosys                | `yosys`     | `/usr/local/bin/yosys` | RTL synthesis tool     |
-| TCL/Tk               | `tclsh`     | System default         | For GUI and scripting  |
-| XFCE Desktop + noVNC | Port 6080   | Browser UI             | Remote desktop access  |
+| Tool      | Command     | Description            |
+| --------- | ----------- | ---------------------- |
+| OpenTimer | `OpenTimer` | Static timing analyzer |
+| Yosys     | `yosys`     | RTL synthesis tool     |
 
 ---
 
-### Environment Details
-
-* Base OS: Ubuntu 22.04 (devcontainers/base)
-* Library path: `/usr/lib/libOpenTimer.so.0`
-* LD_LIBRARY_PATH is preconfigured
-* VNC Server: Xvfb + x11vnc + websockify + supervisor
-* Desktop: XFCE4
-
----
-
-### Verification
-
-Run the following commands to confirm that the tools are installed correctly:
+### Verify Installation
 
 ```bash
 OpenTimer -h
 yosys -V
 ```
 
-Both commands should display their respective version information.
+Both commands should display version information.
 
 ---
 
-### Notes
-
-* The environment starts automatically when the Codespace is launched.
-* The forwarded VNC link remains active as long as the Codespace is running.
-* You can switch between terminal and GUI modes at any time.
-
----
-
-Would you like me to add Markdown image placeholders (for the three screenshots) so participants can visually follow the same flow as your setup?
+That’s it — participants can now choose between the terminal or GUI and start using OpenTimer and Yosys immediately.
