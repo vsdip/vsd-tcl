@@ -33,14 +33,21 @@ ENV LD_LIBRARY_PATH="/usr/lib:${LD_LIBRARY_PATH:-}"
 # -----------------------------
 # Yosys (build from source)
 # -----------------------------
-WORKDIR /opt
-RUN git clone https://github.com/YosysHQ/yosys.git && \
-    cd yosys && \
-    git submodule update --init --recursive && \
-    make config-gcc && \
-    make -j"$(nproc)" && \
-    make install && \
-    echo "✅ Yosys installed successfully"
+# (Later) Copy Yosys bundle
+COPY .devcontainer/yosys-binaries.tar.gz /tmp/yosys-binaries.tar.gz
+RUN tar -xzf /tmp/yosys-binaries.tar.gz -C /usr/local/bin && \
+    chmod +x /usr/local/bin/yosys* && \
+    rm /tmp/yosys-binaries.tar.gz && \
+    echo "✅ Precompiled Yosys installed"
+    
+#WORKDIR /opt
+#RUN git clone https://github.com/YosysHQ/yosys.git && \
+#    cd yosys && \
+#    git submodule update --init --recursive && \
+#    make config-gcc && \
+#    make -j"$(nproc)" && \
+#    make install && \
+#    echo "✅ Yosys installed successfully"
 
 # -----------------------------
 # noVNC desktop (supervisor)
