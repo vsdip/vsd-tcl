@@ -29,7 +29,7 @@ set -euo pipefail
 : "${VNC_DISPLAY:=:1}"
 : "${VNC_RESOLUTION:=1280x800}"
 : "${VNC_DEPTH:=24}"
-: "${VNC_PASSWORD:=codespace}"
+: "${VNC_PASSWORD:=vsdiat}"
 
 # Ensure DBus is running for XFCE niceties (not strictly required)
 if ! pgrep -x dbus-daemon >/dev/null 2>&1; then
@@ -65,7 +65,7 @@ user=root
 EOS
 
 # Set a sensible default password (override with CODESPACES secret!)
-ENV VNC_PASSWORD=codespace
+ENV VNC_PASSWORD=vsdiat
 
 # --- (Optional) Build OpenTimer here (comment out if you want GUI only) ---
 RUN git clone https://github.com/skyformat99/OpenTimer-1.0.5.git /workspaces/OpenTimer-1.0.5 && \
