@@ -1,15 +1,20 @@
 {
-  "name": "Codespace with Desktop + OpenTimer",
-  "build": { "dockerfile": "Dockerfile", "context": ".." },
-  "remoteUser": "vscode",
-  "forwardPorts": [6080],
-  "containerEnv": {
-    "VNC_PASSWORD": "vsdiat"        // override from Codespaces Secrets for security
+  "name": "VLSI Codespace (Magic, Netgen, Ngspice + Sky130 GUI)",
+  "build": {
+    "dockerfile": "Dockerfile"
   },
-  "postCreateCommand": "sudo mkdir -p /run/user/1000 && sudo chown vscode:vscode /run/user/1000",
-  "customizations": {
-    "vscode": {
-      "extensions": ["ms-vscode.cpptools", "tcl-lang.tcl"]
+  "forwardPorts": [6080],
+  "portsAttributes": {
+    "6080": {
+      "label": "noVNC Desktop",
+      "onAutoForward": "openBrowser"
     }
+  },
+  "overrideCommand": false,
+  "remoteUser": "root",
+  "containerEnv": {
+    "PDK_ROOT": "/opt/pdk",
+    "VOLARE_HOME": "/opt/volare",
+    "DISPLAY": ":1"
   }
 }
