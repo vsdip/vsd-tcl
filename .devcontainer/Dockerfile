@@ -21,40 +21,33 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------
-# Copy precompiled OpenTimer
+# Prebuilt OpenTimer (from repo root)
 # -----------------------------
-WORKDIR /workspaces/vsd-tcl
-
+# devcontainer.json sets context to repo root, so these paths exist:
 COPY OpenTimer /usr/bin/OpenTimer
 COPY libOpenTimer.so.0 /usr/lib/libOpenTimer.so.0
-
-RUN chmod 755 /usr/bin/OpenTimer /usr/lib/libOpenTimer.so.0 && \
-    ldconfig
-
-ENV LD_LIBRARY_PATH=/usr/lib:$LD_LIBRARY_PATH
+RUN chmod 755 /usr/bin/OpenTimer /usr/lib/libOpenTimer.so.0 && ldconfig
+# Avoid undefined-var warning; still expose the path to runtime
+ENV LD_LIBRARY_PATH="/usr/lib:${LD_LIBRARY_PATH:-}"
 
 # -----------------------------
-# Build & install Yosys
+# Yosys (build from source)
 # -----------------------------
 WORKDIR /opt
-
 RUN git clone https://github.com/YosysHQ/yosys.git && \
     cd yosys && \
+    git submodule update --init --recursive && \
     make config-gcc && \
     make -j"$(nproc)" && \
     make install && \
     echo "✅ Yosys installed successfully"
 
 # -----------------------------
-# Restore workspace
+# noVNC desktop (supervisor)
 # -----------------------------
-WORKDIR /workspaces/vsd-tcl
-
-# -----------------------------
-# noVNC desktop environment
-# -----------------------------
+# With context "..", this file is available at .devcontainer/supervisord.conf
 COPY .devcontainer/supervisord.conf /etc/supervisor/conf.d/vnc.conf
 
 EXPOSE 6080
-
+WORKDIR /workspaces/vsd-tcl
 CMD ["/usr/bin/supervisord", "-n"]
