@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libreadline-dev libncurses-dev flex bison gawk tcsh \
     python3 python3-pip pkg-config curl ca-certificates \
     xfce4 xfce4-terminal x11vnc xvfb novnc websockify supervisor dbus-x11 \
-    libgoogle-glog-dev libgflags-dev \
+    libgoogle-glog-dev libgflags-dev gedit vim \
     clang lld libffi-dev libboost-system-dev libboost-filesystem-dev \
     libboost-python-dev libfl-dev zlib1g-dev graphviz xdot \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
