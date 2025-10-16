@@ -13,8 +13,6 @@
   "overrideCommand": false,
   "remoteUser": "root",
   "containerEnv": {
-    "PDK_ROOT": "/opt/pdk",
-    "VOLARE_HOME": "/opt/volare",
     "DISPLAY": ":1"
   }
 }
