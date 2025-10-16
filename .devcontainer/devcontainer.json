@@ -1,5 +1,21 @@
 {
-  "name": "OpenTimer Minimal",
-  "build": { "dockerfile": "Dockerfile", "context": ".." },
-  "remoteUser": "vscode"
+  "name": "Codespace with Desktop",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "remoteUser": "vscode",
+  "forwardPorts": [6080],
+  "postCreateCommand": "sudo mkdir -p /run/user/1000 && sudo chown vscode:vscode /run/user/1000",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "ms-vscode.cpptools",
+        "tcl-lang.tcl"
+      ]
+    }
+  }
 }
