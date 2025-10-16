@@ -1,21 +1,15 @@
 {
-  "name": "Codespace with Desktop",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": ".."
-  },
+  "name": "Codespace with Desktop + OpenTimer",
+  "build": { "dockerfile": "Dockerfile", "context": ".." },
   "remoteUser": "vscode",
   "forwardPorts": [6080],
+  "containerEnv": {
+    "VNC_PASSWORD": "vsdiat"        // override from Codespaces Secrets for security
+  },
   "postCreateCommand": "sudo mkdir -p /run/user/1000 && sudo chown vscode:vscode /run/user/1000",
   "customizations": {
     "vscode": {
-      "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash"
-      },
-      "extensions": [
-        "ms-vscode.cpptools",
-        "tcl-lang.tcl"
-      ]
+      "extensions": ["ms-vscode.cpptools", "tcl-lang.tcl"]
     }
   }
 }
