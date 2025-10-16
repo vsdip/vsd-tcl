@@ -2,13 +2,23 @@
 
 ## VSD-TCL Environment (OpenTimer + Yosys)
 
-This Codespace provides a complete synthesis and timing analysis setup on Ubuntu 22.04 with both terminal and GUI access.
+This Codespace provides a ready-to-use synthesis and timing analysis setup on **Ubuntu 22.04**, with both **terminal** and **GUI (noVNC)** access.
+
+---
+
+### Step 1 – Open the Codespace
+
+1. Go to the GitHub repository:
+   **[https://github.com/vsdip/vsd-tcl](https://github.com/vsdip/vsd-tcl)**
+2. Click **“Code” → “Open with Codespaces”** to launch the environment in your browser.
+
+![Open Codespaces from GitHub](images/4.jpg)
 
 ---
 
 ### Option 1 – Use the Terminal
 
-Open the **TERMINAL** tab and run:
+Once the Codespace opens, go to the **TERMINAL** tab and run:
 
 ```bash
 OpenTimer
@@ -28,10 +38,11 @@ Exit anytime using `exit`.
 
 ### Option 2 – Use the GUI (noVNC Desktop)
 
-1. Open the **PORTS** tab and find the forwarded port named **noVNC Desktop (6080)**.
-2. Click the forwarded URL.
-3. In the browser, select **`vnc_lite.html`** to open the XFCE desktop.
-4. Open a terminal inside the desktop and run:
+1. In your Codespace, open the **PORTS** tab.
+2. Find the forwarded port named **noVNC Desktop (6080)**.
+3. Click the forwarded URL.
+4. On the web page, select **`vnc_lite.html`** to open the XFCE desktop.
+5. Inside the desktop terminal, run:
 
    ```bash
    OpenTimer
@@ -47,8 +58,8 @@ Exit anytime using `exit`.
 
 | Tool      | Command     | Description            |
 | --------- | ----------- | ---------------------- |
-| OpenTimer | `OpenTimer` | Static timing analyzer |
-| Yosys     | `yosys`     | RTL synthesis tool     |
+| OpenTimer | `OpenTimer` | Static Timing Analyzer |
+| Yosys     | `yosys`     | RTL Synthesis Tool     |
 
 ---
 
@@ -63,4 +74,4 @@ Both commands should display version information.
 
 ---
 
-That’s it — participants can now choose between the terminal or GUI and start using OpenTimer and Yosys immediately.
+Would you like me to add a short “Tips / Troubleshooting” section at the end (for slow Codespace load or VNC reconnect)?
