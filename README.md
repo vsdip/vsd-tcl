@@ -74,4 +74,3 @@ Both commands should display version information.
 
 ---
 
-Would you like me to add a short “Tips / Troubleshooting” section at the end (for slow Codespace load or VNC reconnect)?
