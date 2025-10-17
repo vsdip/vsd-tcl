@@ -62,7 +62,15 @@ Exit anytime using `exit`.
 | Yosys     | `yosys`     | RTL Synthesis Tool     |
 
 ---
+### Project Folder Location
 
+The design files are available under the folder:
+`/workspaces/vsd-tcl`
+as shown in the image below:
+
+![Project Folder View](images/5.jpg)
+
+---
 ### Verify Installation
 
 ```bash
